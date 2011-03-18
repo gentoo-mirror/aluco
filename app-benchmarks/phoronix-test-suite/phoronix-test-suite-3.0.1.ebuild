@@ -1,6 +1,6 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-benchmarks/phoronix-test-suite/phoronix-test-suite-3.0.0.ebuild,v 1.0 2011/03/11 21:50:49 abourgeois Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-benchmarks/phoronix-test-suite/phoronix-test-suite-3.0.1.ebuild,v 1.0 2011/03/18 11:56:29 abourgeois Exp $
 
 EAPI=2
 
@@ -17,16 +17,15 @@ IUSE="gtk"
 
 DEPEND=""
 
-# php 5.3 doesn't have pcre useflag anymore
+# php 5.3 doesn't have pcre and reflection useflags anymore
 # php-gtk doesn't support php 5.3 at once
-RDEPEND="|| ( dev-lang/php:5.3[cli,curl,gd,posix,pcntl,truetype,zip] dev-lang/php:5.2[cli,curl,gd,posix,pcntl,truetype,pcre,zip] )
+RDEPEND="|| ( dev-lang/php:5.3[cli,curl,gd,posix,pcntl,truetype,zip] dev-lang/php:5.2[cli,curl,gd,posix,pcntl,reflection,truetype,pcre,zip] )
 		dev-php5/pecl-ps
 		gtk? ( dev-php5/php-gtk )"
 
 S="${WORKDIR}/${PN}"
 
 src_prepare() {
-	#epatch "${FILESDIR}"/font.patch
 	sed -i -e "s,export PTS_DIR=\`pwd\`,export PTS_DIR=\"/usr/share/${PN}\"," \
 		phoronix-test-suite
 }
