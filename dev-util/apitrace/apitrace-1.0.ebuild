@@ -15,6 +15,7 @@ SLOT="1"
 KEYWORDS="~amd64 ~x86"
 IUSE="python" #qt4
 
+RDEPEND=""
 #RDEPEND="qt4? ( =x11-libs/qt-gui-4.7*
 #		>=dev-libs/qjson-0.5 )"
 
@@ -22,15 +23,10 @@ DEPEND="${RDEPEND}
 	=dev-util/cmake-2.8*
 	=dev-lang/python-2.6*"
 
+S="${WORKDIR}/${PN}-${PN}-5f03103"
+
 pkg_setup() {
 	python_set_active_version 2
-}
-
-src_unpack() {
-	unpack ${A}
-	#get_version_component_range
-	S=${WORKDIR}/${PN}-${PN}-5f03103
-	cd ${S}
 }
 
 src_configure() {
