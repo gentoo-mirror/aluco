@@ -13,11 +13,10 @@ SRC_URI="https://github.com/apitrace/apitrace/tarball/${PV}/apitrace-${P}-0-g5f0
 LICENSE="BSD"
 SLOT="1"
 KEYWORDS="~amd64 ~x86"
-IUSE="python" #qt4
+IUSE="python qt4"
 
-RDEPEND=""
-#RDEPEND="qt4? ( =x11-libs/qt-gui-4.7*
-#		>=dev-libs/qjson-0.5 )"
+RDEPEND="qt4? ( =x11-libs/qt-gui-4.7*
+		>=dev-libs/qjson-0.5 )"
 
 DEPEND="${RDEPEND}
 	=dev-util/cmake-2.8*
@@ -40,10 +39,12 @@ src_compile() {
 src_install() {
 	dodoc README TODO || die
 
-	echo $PWD
 	exeinto /usr/bin || die
 	doexe build/glretrace || die
 	doexe build/tracedump || die
+	if use qt4 ; then
+		doexe build/qapitrace || die
+	fi
 
 	dolib.so build/glxtrace.so || die
 	dolib.a build/libtrace.a || die
