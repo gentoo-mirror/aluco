@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+#TODO: new use flags, new swig.
+
 EAPI=3
 PYTHON_DEPEND="python? 2:2.6"
 inherit eutils toolchain-funcs multilib python
@@ -11,9 +13,9 @@ HOMEPAGE="http://www.mltframework.org/"
 SRC_URI="mirror://sourceforge/mlt/${P}.tar.gz"
 
 LICENSE="GPL-2"
-SLOT="0"
+SLOT="1"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
-IUSE="compressed-lumas dv debug ffmpeg frei0r gtk jack kde libsamplerate melt
+IUSE="8bpp-lumas compressed-lumas dv debug ffmpeg frei0r gtk jack jpeg kde libsamplerate melt
 mmx qt4 quicktime sdl sox sse sse2 vorbis xine xml lua python ruby vdpau" # java perl php tcl mono
 
 RDEPEND="ffmpeg? ( virtual/ffmpeg[vdpau?] )
@@ -116,9 +118,9 @@ src_configure() {
 	(use quicktime && use dv) ||  myconf="${myconf} --disable-kino"
 
 	use compressed-lumas && myconf="${myconf} --luma-compress"
-	#use luma-8bpp && myconf="${myconf} --luma-8bpp"
+	use 8bpp-lumas && myconf="${myconf} --luma-8bpp"
 
-	#use jpeg-linsys && myconf="${myconf} --linsys-with-jpeg"
+	use jpeg && myconf="${myconf} --linsys-with-jpeg"
 
 	( use x86 || use amd64 ) && \
 		myconf="${myconf} $(use_enable mmx)" ||
