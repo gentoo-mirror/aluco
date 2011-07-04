@@ -1,3 +1,5 @@
+# Fix the location of chroot in gentoo (/bin instead of /usr/sbin).
+
 diff -ur fakechroot-2.12.orig//test/chroot.sh fakechroot-2.12/test/chroot.sh
 --- fakechroot-2.12.orig//test/chroot.sh	2011-06-27 22:29:30.780440922 +0200
 +++ fakechroot-2.12/test/chroot.sh	2011-06-27 22:29:56.829440999 +0200
