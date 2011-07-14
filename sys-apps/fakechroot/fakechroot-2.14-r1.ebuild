@@ -12,12 +12,12 @@ SRC_URI="mirror://debian/pool/main/f/${PN}/${PN}_${PV}.orig.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
-
-RESTRICT="test"
+IUSE="test hardened"
 
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-fix_chk_fail.patch
+	use test && epatch "${FILESDIR}"/${P}-fix_chroot_test_location.patch
+	use test && use hardened && epatch "${FILESDIR}"/${P}-fix_test_hardened.patch
 }
 
 src_configure() {
