@@ -8,7 +8,9 @@ inherit eutils bash-completion-r1
 
 DESCRIPTION="Phoronix's comprehensive, cross-platform testing and benchmark suite"
 HOMEPAGE="http://www.phoronix-test-suite.com"
-SRC_URI="http://www.phoronix-test-suite.com/download.php?file=${P} -> ${P}.tar.gz"
+MY_PV="3.6.0m1"
+MY_P="${PN}-${MY_PV}"
+SRC_URI="http://www.phoronix-test-suite.com/download.php?file=development/${MY_P} -> ${MY_P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -61,47 +63,9 @@ src_install() {
 
 	newbashcomp pts-core/static/bash_completion ${PN}
 
-	# Need to fix the cli-php config for downloading to work. Very naughty!
-	local slots
-	local slot
-	if [[ "x${PHP_TARGETS}" == "x" ]] ; then
-		ewarn
-		ewarn "PHP_TARGETS seems empty, php.ini file can't be configure."
-		ewarn "Make sure that PHP_TARGETS in /etc/make.conf is set."
-		ewarn "phoronix-test-suite needs the 'allow_url_fopen' option set to \"On\""
-		ewarn "for downloading to work properly."
-		ewarn
-	else
-		for slot in ${PHP_TARGETS}; do
-			slots+=" ${slot/-/.}"
-		done
-	fi
-
-	for slot in ${slots}; do
-		local PHP_INI_FILE="/etc/php/cli-${slot}/php.ini"
-		if [[ -f ${PHP_INI_FILE} ]] ; then
-			dodir $(dirname ${PHP_INI_FILE})
-			cp ${PHP_INI_FILE} "${D}${PHP_INI_FILE}"
-			sed -e 's|^allow_url_fopen .*|allow_url_fopen = On|g' -i "${D}${PHP_INI_FILE}"
-		else
-			if [[ "x$(eselect php show cli)" == "x${slot}" ]] ; then
-				ewarn
-				ewarn "${slot} hasn't a php.ini file."
-				ewarn "phoronix-test-suite needs the 'allow_url_fopen' option set to \"On\""
-				ewarn "for downloading to work properly."
-				ewarn "Check that your PHP_INI_VERSION is set during ${slot} merge"
-				ewarn
-			else
-				elog
-				elog "${slot} hasn't a php.ini file."
-				elog "phoronix-test-suite may need the 'allow_url_fopen' option set to \"On\""
-				elog "for downloading to work properly if you switch to ${slot}"
-				elog "Check that your PHP_INI_VERSION is set during ${slot} merge"
-				elog
-			fi
-		fi
-	done
-
+	ewarn
+	ewarn "phoronix-test-suite needs the 'allow_url_fopen' option set to \"On\""
+	ewarn "in your /etc/php/cli-php5.*/php.ini for downloading to work properly."
 	ewarn
 	ewarn "If you upgrade from phoronix-test-suite-2*, you should reinstall all"
 	ewarn "your tests because"
