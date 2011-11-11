@@ -54,8 +54,8 @@ RDEPEND="virtual/jpeg
 	openexr? ( media-libs/openexr )
 	ffmpeg? (
 		>=virtual/ffmpeg-0.6.90[x264,mp3,encode,theora]
+		jpeg2k? ( >=virtual/ffmpeg-0.6.90[x264,mp3,encode,theora,jpeg2k] )
 	)
-	jpeg2k? ( media-libs/openjpeg )
 	openal? ( >=media-libs/openal-1.6.372 )
 	fftw? ( sci-libs/fftw:3.0 )
 	jack? ( media-sound/jack-audio-connection-kit )
@@ -145,7 +145,7 @@ src_prepare() {
 #	epatch "${FILESDIR}"/${P}-libav-0.7.patch
 	epatch "${FILESDIR}"/${P}-CVE-2009-3850-v3.patch
 	epatch "${FILESDIR}"/${P}-enable_site_module.patch
-
+	epatch "${FILESDIR}"/${P}-cmake.patch
 }
 
 src_configure() {
@@ -331,11 +331,11 @@ src_install() {
 			"${WORKDIR}/install/blenderplayer-${SLOT}"
 		doexe "${WORKDIR}/install/blenderplayer-${SLOT}"
 	fi
-	if use verse; then
-		cp "${WORKDIR}"/install/bin/verse_server \
-			"${WORKDIR}/install/bin/verse_server-${SLOT}"
-		doexe "${WORKDIR}"/install/bin/verse_server-${SLOT}
-	fi
+#	if use verse; then
+#		cp "${WORKDIR}"/install/bin/verse_server \
+#			"${WORKDIR}/install/bin/verse_server-${SLOT}"
+#		doexe "${WORKDIR}"/install/bin/verse_server-${SLOT}
+#	fi
 
 	# install plugins
 	exeinto /usr/share/${PN}/${SLOT}/textures
