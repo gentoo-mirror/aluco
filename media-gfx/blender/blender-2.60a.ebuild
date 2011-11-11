@@ -390,7 +390,7 @@ src_install() {
 	rm -r "${WORKDIR}"/install/{Python-license.txt,icons,GPL-license.txt,copyright.txt}
 
 	# installing blender
-	insinto /usr/share/${PN}/${PV}
+	insinto /usr/share/${PN}/${SLOT}
 	doins -r "${WORKDIR}"/install/${SLOT}/*
 
 
