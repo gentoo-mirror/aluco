@@ -13,7 +13,7 @@ fi
 inherit scons-utils eutils python versionator flag-o-matic toolchain-funcs ${SCM}
 
 IUSE="+game-engine player +elbeem +openexr ffmpeg jpeg2k openal openmp \
-	+dds debug fftw jack apidoc sndfile lcms tweak-mode sdl sse \
+	+dds debug doc fftw jack apidoc sndfile lcms tweak-mode sdl sse \
 	redcode +zlib iconv contrib collada verse 3dmouse"
 
 LANGS="en ar bg ca cs de el es fi fr hr it ja ko nl pl pt_BR ro ru sr sv uk zh_CN"
@@ -123,11 +123,12 @@ src_prepare() {
 
 	# TODO: write a proper Makefile to replace the borked bmake script
 	epatch "${FILESDIR}"/${PN}-${SLOT}-bmake.patch
+	chmod 755 "${WORKDIR}"/${P}/release/plugins/bmake
 
 	# OpenJPEG
 	einfo "Removing bundled OpenJPEG ..."
 	rm -r extern/libopenjpeg
-	#epatch "${FILESDIR}"/${PN}-${SLOT}-openjpeg.patch
+	epatch "${FILESDIR}"/${PN}-${SLOT}-openjpeg.patch
 
 	# Glew
 	einfo "Removing bundled Glew ..."
@@ -285,21 +286,14 @@ src_configure() {
 }
 
 src_compile() {
-	escons || die \
-		'!!! Please add "${S}/scons.config" when filing bugs reports \
-		to bugs.gentoo.org'
+	escons
 
 	einfo "Building plugins ..."
-	cd "${WORKDIR}"/${P}/release/plugins \
-		|| die "dir ${WORKDIR}/${P}/release/plugins do not exist"
-	chmod 755 bmake
-
 	# FIX: plugins are built without respecting user's LDFLAGS
 	emake \
 		CFLAGS="${CFLAGS} -fPIC" \
 		LDFLAGS="$(raw-ldflags) -Bshareable" \
-		> /dev/null \
-		|| die "plugins compilation failed"
+		-C release/plugins
 }
 
 src_install() {
@@ -318,6 +312,7 @@ src_install() {
 
 		export BLENDER_SYSTEM_SCRIPTS="/usr/share/blender/${SLOT}/scripts"
 		export BLENDER_SYSTEM_DATAFILES="/usr/share/blender/${SLOT}/datafiles"
+		export BLENDER_SYSTEM_PLUGINS="/usr/lib/blender/${SLOT}/plugins"
 			exec /usr/bin/blender-bin-${SLOT} \$*
 	EOF
 
@@ -338,13 +333,16 @@ src_install() {
 #	fi
 
 	# install plugins
-	exeinto /usr/share/${PN}/${SLOT}/textures
+	exeinto /usr/lib/${PN}/${SLOT}/plugins/texture
 	doexe "${WORKDIR}"/${P}/release/plugins/texture/*.so
-	exeinto /usr/share/${PN}/${SLOT}/sequences
+	exeinto /usr/lib/${PN}/${SLOT}/plugins/sequences
 	doexe "${WORKDIR}"/${P}/release/plugins/sequence/*.so
 	insinto /usr/include/${PN}/${SLOT}
-	doins "${WORKDIR}"/${P}/release/plugins/include/*.h
-#	rm -r "${WORKDIR}"/${P}/release/plugins || die
+	doins "${WORKDIR}"/${P}/source/blender/blenpluginapi/*.h
+#	rm -r "${WORKDIR}"/${P}/release/plugins
+#	insinto /usr/share/${PN}/${SLOT}
+#	doins "${WORKDIR}"/${P}/release/datafiles
+#	doins "${WORKDIR}"/${P}/release/scripts
 
 	# install desktop file
 	insinto /usr/share/pixmaps
@@ -354,11 +352,12 @@ src_install() {
 	insinto /usr/share/applications
 	cp release/freedesktop/blender.desktop \
 		release/freedesktop/blender-${SLOT}.desktop
-	doins release/freedesktop/blender-${SLOT}.desktop || die
-	newins "${FILESDIR}"/${P}-insecure.desktop ${PN}-${SLOT}-insecure.desktop || die
+	doins release/freedesktop/blender-${SLOT}.desktop
+	newins "${FILESDIR}"/${P}-insecure.desktop ${PN}-${SLOT}-insecure.desktop
 
 	# install docs
-#	use doc && dodoc release/text/BlenderQuickStart.pdf
+	doman "${WORKDIR}"/${P}/doc/manpage/blender.1
+	use doc && dodoc -r "${WORKDIR}"/${P}/doc/guides/*
 	if use apidoc; then
 
 		einfo "Generating (BGE) Blender Game Engine API docs ..."
@@ -391,23 +390,23 @@ src_install() {
 	rm -r "${WORKDIR}"/install/{Python-license.txt,icons,GPL-license.txt,copyright.txt}
 
 	# installing blender
-	insinto /usr/share/${PN}/${SLOT}
-	doins -r "${WORKDIR}"/install/${PV}/*
-#        doins -r "${WORKDIR}"/install/${SLOT}/*
+	insinto /usr/share/${PN}/${PV}
+	doins -r "${WORKDIR}"/install/${SLOT}/*
+
 
 	# FIX: making all python scripts readable only by group 'users',
 	#	  so nobody can modify scripts apart root user, but python
 	#	  cache (*.pyc) can be written and shared across the users.
-	chown root:users -R "${D}/usr/share/${PN}/${SLOT}/scripts" || die
-	chmod 755 -R "${D}/usr/share/${PN}/${SLOT}/scripts" || die
+#	chown root:users -R "${D}/usr/share/${PN}/${SLOT}/scripts" || die
+#	chmod 755 -R "${D}/usr/share/${PN}/${SLOT}/scripts" || die
 }
 
-pkg_preinst() {
-	if [ -h "${ROOT}/usr/$(get_libdir)/blender/plugins/include" ];
-	then
-		rm -r "${ROOT}"/usr/$(get_libdir)/blender/plugins/include
-	fi
-}
+#pkg_preinst() {
+#	if [ -h "${ROOT}/usr/$(get_libdir)/blender/plugins/include" ];
+#	then
+#		rm -r "${ROOT}"/usr/$(get_libdir)/blender/plugins/include
+#	fi
+#}
 
 pkg_postinst() {
 	echo

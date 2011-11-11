@@ -13,7 +13,7 @@
  Comment[es]=modelado 3D, animación, renderizado y post-producción
 -Exec=blender
 -Icon=blender
-+Exec=blender-2.60a
++Exec=blender-2.60
 +Icon=blender-2.6
  Terminal=false
  Type=Application
