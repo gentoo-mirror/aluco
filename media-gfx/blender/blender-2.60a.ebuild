@@ -61,15 +61,14 @@ RDEPEND="virtual/jpeg
 	jack? ( media-sound/jack-audio-connection-kit )
 	sndfile? ( media-libs/libsndfile )
 	lcms? ( media-libs/lcms )
-	collada? ( media-libs/opencollada )
 	3dmouse? ( app-misc/libspnav )"
 
-DEPEND=">=dev-util/scons-0.98
+DEPEND="dev-util/scons
 	apidoc? (
 		dev-python/sphinx
-		>=app-doc/doxygen-1.5.7[-nodot]
+		app-doc/doxygen[-nodot]
+		game-engine? ( dev-python/epydoc )
 	)
-	x11-base/xorg-server
 	${RDEPEND}"
 
 # configure internationalization only if LINGUAS have more
@@ -286,7 +285,9 @@ src_configure() {
 }
 
 src_compile() {
-	escons
+	escons || die \
+		'!!! Please add "${S}/scons.config" when filing bugs reports \
+		to bugs.gentoo.org'
 
 	einfo "Building plugins ..."
 	# FIX: plugins are built without respecting user's LDFLAGS
@@ -361,21 +362,28 @@ src_install() {
 	if use apidoc; then
 
 		einfo "Generating (BGE) Blender Game Engine API docs ..."
-		docinto "API/BGE_API"
-		dohtml -r "${WORKDIR}"/${P}/doc/*
-#		rm -r "${WORKDIR}"/blender/doc
+		epydoc source/gameengine/PyDoc/*.py -v \
+			-o doc/BGE_API \
+			--quiet --quiet --quiet \
+			--simple-term \
+			--url "http://www.blender.org" \
+			--top API_intro \
+			--name "Blender GameEngine" \
+			 --no-private --no-sourcecode \
+			--inheritance=included \
+			--graph=all \
+			--dotpath /usr/bin/dot \
+			|| die "epydoc failed."
+		docinto "API/gameengine"
+		dohtml -r "${WORKDIR}"/${P}/doc/BGE_API/*
 
-#		einfo "Generating (BPY) Blender Python API docs ..."
-#		epydoc source/blender/python/doc/*.py -v \
-#			-o doc/BPY_API \
-#			--quiet --quiet --quiet \
-#			--simple-term \
-#			--inheritance=included \
-#			--graph=all \
-#			--dotpath /usr/bin/dot \
-#			|| die "epydoc failed."
-#		docinto "API/python"
-#		dohtml -r doc/BPY_API/*
+		#einfo "Generating (BPY) Blender Python API docs ..."
+		"${D}"/usr/bin/blender-bin-2.60 --background --python doc/python_api/sphinx_doc_gen.py || die "blender failed."
+		pushd doc/python_api > /dev/null
+		sphinx-build sphinx-in BPY_API || die "sphinx failed."
+		popd > /dev/null
+		docinto "API/python"
+		dohtml -r doc/python_api/BPY_API/*
 
 		einfo "Generating Blender C/C++ API docs ..."
 		pushd "${WORKDIR}"/${P}/doc/doxygen > /dev/null
@@ -392,7 +400,6 @@ src_install() {
 	# installing blender
 	insinto /usr/share/${PN}/${SLOT}
 	doins -r "${WORKDIR}"/install/${SLOT}/*
-
 
 	# FIX: making all python scripts readable only by group 'users',
 	#	  so nobody can modify scripts apart root user, but python

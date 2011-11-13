@@ -21,6 +21,9 @@
 		Available for Windows, Linux, Irix, Sun Solaris, FreeBSD or Mac OS X.
 	</longdescription>
 	<use>
+		<flag name="3dmouse">
+			Support 3D mouse (<pkg>libspnav</pkg>).
+		</flag>
 		<flag name="game-engine">
 			Adds Game Engine support to Blender (2.5* ebuilds).
 		</flag>
