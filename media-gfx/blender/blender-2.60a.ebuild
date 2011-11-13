@@ -334,9 +334,9 @@ src_install() {
 #	fi
 
 	# install plugins
-	exeinto /usr/lib/${PN}/${SLOT}/plugins/texture
+	exeinto /usr/$(get_libdir)/${PN}/${SLOT}/plugins/texture
 	doexe "${WORKDIR}"/${P}/release/plugins/texture/*.so
-	exeinto /usr/lib/${PN}/${SLOT}/plugins/sequences
+	exeinto /usr/$(get_libdir)/${PN}/${SLOT}/plugins/sequences
 	doexe "${WORKDIR}"/${P}/release/plugins/sequence/*.so
 	insinto /usr/include/${PN}/${SLOT}
 	doins "${WORKDIR}"/${P}/source/blender/blenpluginapi/*.h
