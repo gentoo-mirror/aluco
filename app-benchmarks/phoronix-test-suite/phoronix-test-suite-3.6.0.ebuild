@@ -8,9 +8,7 @@ inherit eutils bash-completion-r1
 
 DESCRIPTION="Phoronix's comprehensive, cross-platform testing and benchmark suite"
 HOMEPAGE="http://www.phoronix-test-suite.com"
-MY_PV="3.6.0m2"
-MY_P="${PN}-${MY_PV}"
-SRC_URI="http://www.phoronix-test-suite.com/download.php?file=development/${MY_P} -> ${MY_P}.tar.gz"
+SRC_URI="http://www.phoronix-test-suite.com/download.php?file=${P} -> ${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
