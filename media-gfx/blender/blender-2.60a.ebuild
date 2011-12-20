@@ -1,6 +1,6 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/media-gfx/blender/blender-2.60a.ebuild,v 1.4 2011/11/13 22:43:48 sping Exp $
 
 PYTHON_DEPEND="3:3.2"
 EAPI=4
@@ -14,7 +14,7 @@ inherit scons-utils eutils python versionator flag-o-matic toolchain-funcs ${SCM
 
 IUSE="+game-engine player +elbeem +openexr ffmpeg jpeg2k openal openmp \
 	+dds debug doc fftw jack apidoc sndfile lcms tweak-mode sdl sse \
-	redcode +zlib iconv contrib collada verse 3dmouse"
+	redcode +zlib iconv contrib verse 3dmouse"
 
 LANGS="en ar bg ca cs de el es fi fr hr it ja ko nl pl pt_BR ro ru sr sv uk zh_CN"
 for X in ${LANGS} ; do
@@ -117,7 +117,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${PN}-desktop.patch
+	epatch "${FILESDIR}"/${P}-desktop.patch
 	epatch "${FILESDIR}"/${PN}-${SLOT}-doxyfile.patch
 
 	# TODO: write a proper Makefile to replace the borked bmake script
@@ -142,10 +142,9 @@ src_prepare() {
 	# Linux 3.x (bug #381099)
 	epatch "${FILESDIR}"/${P}-linux-3.patch
 
-#	epatch "${FILESDIR}"/${P}-libav-0.7.patch
+	epatch "${FILESDIR}"/${P}-libav-0.7.patch
 	epatch "${FILESDIR}"/${P}-CVE-2009-3850-v3.patch
 	epatch "${FILESDIR}"/${P}-enable_site_module.patch
-	epatch "${FILESDIR}"/${P}-cmake.patch
 }
 
 src_configure() {
@@ -270,7 +269,6 @@ src_configure() {
 		'ffmpeg' \
 		'ffmpeg ogg' \
 		'player' \
-		'collada' \
 		'sse rayoptimization' \
 		'redcode' \
 		'zlib' \
