@@ -17,7 +17,7 @@ IUSE=""
 RESTRICT="test"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-fix_chk_fail.patch
+	epatch "${FILESDIR}"/${PN}-2.14-fix_chk_fail.patch
 }
 
 src_configure() {
@@ -27,7 +27,7 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install || die
+	emake DESTDIR="${D}" install
 	dodoc NEWS README THANKS
 	find "${D}" -name '*.la' -exec rm -f '{}' +
 }
