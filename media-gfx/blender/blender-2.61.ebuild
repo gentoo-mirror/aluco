@@ -142,7 +142,7 @@ src_prepare() {
 	rm -r extern/Eigen3
 	epatch "${FILESDIR}"/${P}-eigen.patch
 
-	# Bullet3
+	# Bullet2
 	einfo "Removing bundled Bullet2 ..."
 	rm -r extern/bullet2
 	epatch "${FILESDIR}"/${PN}-${SLOT}-bullet.patch
@@ -355,6 +355,8 @@ src_install() {
 	doexe "${WORKDIR}"/${P}/release/plugins/sequence/*.so
 	insinto /usr/include/${PN}/${PV}
 	doins "${WORKDIR}"/${P}/source/blender/blenpluginapi/*.h
+	insinto /usr/share/${PN}/${PV}/scripts
+	use contrib && doins -r "${WORKDIR}"/${P}/release/scripts/addons_contrib
 
 	# install desktop file
 	insinto /usr/share/pixmaps

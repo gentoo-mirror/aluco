@@ -22,10 +22,10 @@
 	</longdescription>
 	<use>
 		<flag name="3dmouse">
-			Support 3D mouse (<pkg>libspnav</pkg>).
+			Support 3D mouse (<pkg>media-libs/libspnav</pkg>).
 		</flag>
 		<flag name="game-engine">
-			Adds Game Engine support to Blender (2.5* ebuilds).
+			Adds Game Engine support to Blender (>=2.5* ebuilds).
 		</flag>
 		<flag name="contrib">
 			Install contrib scripts.
@@ -36,8 +36,8 @@
 		<flag name="collada">
 			Add support for Collada interchange format.
 		</flag>
-		<flag name="verse">
-			Adds verse clustering features to Blender.
+		<flag name="cycles">
+			Enables Cycles render engine.
 		</flag>
 		<flag name="dds">
 			Adds DDS textures support to Blender.
