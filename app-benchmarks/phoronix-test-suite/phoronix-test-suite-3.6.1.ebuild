@@ -26,6 +26,7 @@ S="${WORKDIR}/${PN}"
 src_prepare() {
 	sed -i -e "s,export PTS_DIR=\`pwd\`,export PTS_DIR=\"/usr/share/${PN}\"," \
 		phoronix-test-suite
+	epatch "${FILESDIR}"/${P}-lspci.patch
 }
 
 src_configure() {
