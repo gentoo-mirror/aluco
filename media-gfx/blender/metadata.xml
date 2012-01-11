@@ -33,9 +33,6 @@
 		<flag name="openexr">
 			Support for the OpenEXR graphics file format.
 		</flag>
-		<flag name="collada">
-			Add support for Collada interchange format.
-		</flag>
 		<flag name="cycles">
 			Enables Cycles render engine.
 		</flag>
