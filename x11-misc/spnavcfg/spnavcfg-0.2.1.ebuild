@@ -4,7 +4,7 @@
 
 EAPI="3"
 
-inherit toolchain-funcs
+inherit eutils
 
 DESCRIPTION="GTK-based GUI to configure a space navigator device"
 HOMEPAGE="http://spacenav.sourceforge.net/"
@@ -19,21 +19,20 @@ COMMON_DEPEND="x11-libs/gtk+:2"
 DEPEND="${COMMON_DEPEND}
 	dev-util/pkgconfig"
 RDEPEND="${COMMON_DEPEND}
-	sys-libs/spacenavd"
+	sys-libs/spacenavd[X]"
 
 src_prepare() {
-	rm configure || die
-	mv Makefile{.in,} || die
+	epatch "${FILESDIR}"/${P}-destdir.patch
+	epatch "${FILESDIR}"/${P}-custom-flags.patch
+	epatch "${FILESDIR}"/${P}-x11-libs.patch
 }
 
-src_compile() {
-	# TODO Improve build system upstream
-	emake CFLAGS="${CFLAGS} $(pkg-config --cflags gtk+-2.0)" \
-			LDFLAGS="${LDFLAGS} $(pkg-config --libs gtk+-2.0)" \
-			CC=$(tc-getCC) \
-		|| die
+src_configure() {
+	econf \
+		$(use_enable debug) || die
 }
 
 src_install() {
-	emake PREFIX="${D}/usr" install || die
+	emake DESTDIR="${D}" install || die "Install failed"
+	dodoc README || die
 }

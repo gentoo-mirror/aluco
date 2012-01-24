@@ -14,7 +14,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="X debug"
 
-RDEPEND="X? ( x11-apps/xdpyinfo )"
+RDEPEND="X? ( x11-apps/xdpyinfo
+			  x11-misc/spnavcfg )"
 DEPEND="${RDEPEND}"
 
 pkg_setup() {

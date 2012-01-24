@@ -1,0 +1,12 @@
+diff -Npur spnavcfg-0.2.1.orig/Makefile.in spnavcfg-0.2.1/Makefile.in
+--- spnavcfg-0.2.1.orig/Makefile.in	2012-01-24 21:14:55.115132278 +0100
++++ spnavcfg-0.2.1/Makefile.in	2012-01-24 21:15:07.796132054 +0100
+@@ -6,7 +6,7 @@ warn = -Wall -Wno-int-to-pointer-cast -W
+ CC = gcc
+ INSTALL = install
+ CFLAGS = -pedantic $(warn) $(dbg) $(opt) $(user_cflags) `pkg-config --cflags gtk+-2.0`
+-LDFLAGS = $(user_ldflags) `pkg-config --libs gtk+-2.0`
++LDFLAGS = $(user_ldflags) `pkg-config --libs gtk+-2.0` -lX11
+ 
+ $(bin): $(obj)
+ 	$(CC) -o $@ $(obj) $(LDFLAGS)
