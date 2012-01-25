@@ -12,10 +12,9 @@ SRC_URI="http://sourceforge.net/projects/spacenav/files/spacenav%20daemon/spacen
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X debug"
+IUSE="X"
 
-RDEPEND="X? ( x11-apps/xdpyinfo
-			  x11-misc/spnavcfg )"
+RDEPEND="X? ( x11-apps/xdpyinfo )"
 DEPEND="${RDEPEND}"
 
 pkg_setup() {
@@ -31,8 +30,7 @@ src_prepare() {
 src_configure() {
 	econf \
 		--enable-opt --enable-ldopt \
-		$(use_enable X x11) \
-		$(use_enable debug)
+		$(use_enable X x11)
 }
 
 src_install() {
@@ -51,7 +49,7 @@ src_install() {
 pkg_postinst() {
 	elog "To start the Spacenav daemon system-wide by default"
 	elog "you should add it to the default runlevel :"
-	elog "\`rc-update add spnavd default\`"
+	elog "\`rc-update add spacenavd default\`"
 	elog
 	if use X; then
 		elog "To start generating Spacenav X events by default"

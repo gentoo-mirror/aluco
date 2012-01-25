@@ -27,11 +27,6 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}-x11-libs.patch
 }
 
-src_configure() {
-	econf \
-		$(use_enable debug) || die
-}
-
 src_install() {
 	emake DESTDIR="${D}" install || die "Install failed"
 	dodoc README || die

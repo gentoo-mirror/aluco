@@ -12,10 +12,9 @@ SRC_URI="http://downloads.sourceforge.net/project/spacenav/spacenav%20library%20
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X debug"
+IUSE="X"
 
-RDEPEND="X? ( sys-libs/spacenavd[X] )
-!X? ( sys-libs/spacenavd )"
+RDEPEND="X? ( sys-libs/spacenavd[X?] )"
 DEPEND="${RDEPEND}"
 
 src_prepare() {
@@ -26,6 +25,5 @@ src_prepare() {
 src_configure() {
 	econf \
 		--enable-opt --enable-ldopt \
-		$(use_enable X x11) \
-		$(use_enable debug)
+		$(use_enable X x11)
 }

@@ -8,6 +8,7 @@
 		<description>aluco's overlay maintainer</description>
 	</maintainer>
 	<longdescription>
-		The spnavcfg is the GTK-based configuration GUI for sys-libs/spacenavd.
+		The spnavcfg is the GTK-based configuration GUI for
+		<pkg>sys-libs/spacenavd</pkg>.
 	</longdescription>
 </pkgmetadata>
