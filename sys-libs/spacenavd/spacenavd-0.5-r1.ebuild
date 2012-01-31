@@ -6,9 +6,10 @@ EAPI="4"
 
 inherit eutils linux-info toolchain-funcs
 
+MY_PN='spacenav'
 DESCRIPTION="The spacenavd daemon provides free alternative to the 3dxserv daemon."
 HOMEPAGE="http://spacenav.sourceforge.net/"
-SRC_URI="http://sourceforge.net/projects/spacenav/files/spacenav%20daemon/spacenavd%20${PV}/${P}.tar.gz"
+SRC_URI="mirror://sourceforge/project/${MY_PN}/${MY_PN}%20daemon/${PN}%20${PV}/${P}.tar.gz"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -22,6 +23,7 @@ pkg_setup() {
 	ERROR_CFG="Your kernel needs HOTPLUG for the spacenavd to work properly"
 	check_extra_config
 }
+
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-destdir.patch
 	epatch "${FILESDIR}"/${P}-custom-flags.patch
