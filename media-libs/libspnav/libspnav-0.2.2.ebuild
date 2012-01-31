@@ -4,7 +4,7 @@
 
 EAPI="4"
 
-inherit eutils
+inherit eutils toolchain-funcs
 
 DESCRIPTION="The libspnav provides a replacement of the magellan library with cleaner and more orthogonal API."
 HOMEPAGE="http://spacenav.sourceforge.net/"
@@ -26,4 +26,8 @@ src_configure() {
 	econf \
 		--enable-opt --enable-ldopt \
 		$(use_enable X x11)
+}
+
+src_compile() {
+	emake CC=$(tc-getCC)
 }

@@ -1,6 +1,28 @@
+diff -Npur libspnav-0.2.2.orig/Makefile.in libspnav-0.2.2/Makefile.in
+--- libspnav-0.2.2.orig/Makefile.in	2012-01-31 22:34:01.448356249 +0100
++++ libspnav-0.2.2/Makefile.in	2012-01-31 22:39:20.229350669 +0100
+@@ -7,7 +7,8 @@ lib_so = $(soname).1
+ 
+ CC = gcc
+ AR = ar
+-CFLAGS = $(opt) $(dbg) -std=c89 -fpic -pedantic -Wall -fno-strict-aliasing -I.
++CFLAGS = $(opt) -fpic -I.
++LDFLAGS = $(ldopt) -shared -Wl,-soname,$(soname)
+ 
+ .PHONY: all
+ all: $(lib_a) $(lib_so)
+@@ -16,7 +17,7 @@ $(lib_a): $(obj)
+ 	$(AR) rcs $@ $(obj)
+ 
+ $(lib_so): $(obj)
+-	$(CC) -shared -Wl,-soname,$(soname) -o $@ $(obj)
++	$(CC) $(LDFLAGS) -o $@ $(obj)
+ 
+ %.o: $(srcdir)/%.c
+ 	$(CC) $(CFLAGS) -c $< -o $@
 diff -Npur libspnav-0.2.2.orig/configure libspnav-0.2.2/configure
---- libspnav-0.2.2.orig/configure	2011-11-15 22:43:07.707324314 +0100
-+++ libspnav-0.2.2/configure	2011-11-15 22:47:19.586319890 +0100
+--- libspnav-0.2.2.orig/configure	2012-01-31 22:34:01.448356249 +0100
++++ libspnav-0.2.2/configure	2012-01-31 22:34:39.703355615 +0100
 @@ -4,6 +4,7 @@ echo 'configuring spacenav library...'
  
  PREFIX=/usr/local
@@ -51,23 +73,3 @@ diff -Npur libspnav-0.2.2.orig/configure libspnav-0.2.2/configure
  fi
  
  if [ "$X11" = 'yes' ]; then
-diff -Npur libspnav-0.2.2.orig/Makefile.in libspnav-0.2.2/Makefile.in
---- libspnav-0.2.2.orig/Makefile.in	2011-11-15 22:43:07.707324314 +0100
-+++ libspnav-0.2.2/Makefile.in	2011-11-15 22:48:26.329318720 +0100
-@@ -8,6 +8,7 @@ lib_so = $(soname).1
- CC = gcc
- AR = ar
- CFLAGS = $(opt) $(dbg) -std=c89 -fpic -pedantic -Wall -fno-strict-aliasing -I.
-+LDFLAGS = $(ldopt) -shared -Wl,-soname,$(soname)
- 
- .PHONY: all
- all: $(lib_a) $(lib_so)
-@@ -16,7 +17,7 @@ $(lib_a): $(obj)
- 	$(AR) rcs $@ $(obj)
- 
- $(lib_so): $(obj)
--	$(CC) -shared -Wl,-soname,$(soname) -o $@ $(obj)
-+	$(CC) $(LDFLAGS) -o $@ $(obj)
- 
- %.o: $(srcdir)/%.c
- 	$(CC) $(CFLAGS) -c $< -o $@

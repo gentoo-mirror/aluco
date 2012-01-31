@@ -4,7 +4,7 @@
 
 EAPI="3"
 
-inherit eutils
+inherit eutils toolchain-funcs
 
 DESCRIPTION="GTK-based GUI to configure a space navigator device"
 HOMEPAGE="http://spacenav.sourceforge.net/"
@@ -25,6 +25,10 @@ src_prepare() {
 	epatch "${FILESDIR}"/${P}-destdir.patch
 	epatch "${FILESDIR}"/${P}-custom-flags.patch
 	epatch "${FILESDIR}"/${P}-x11-libs.patch
+}
+
+src_compile() {
+	emake CC=$(tc-getCC) || die "Make failed."
 }
 
 src_install() {

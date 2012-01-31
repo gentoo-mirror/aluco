@@ -4,7 +4,7 @@
 
 EAPI="4"
 
-inherit eutils linux-info
+inherit eutils linux-info toolchain-funcs
 
 DESCRIPTION="The spacenavd daemon provides free alternative to the 3dxserv daemon."
 HOMEPAGE="http://spacenav.sourceforge.net/"
@@ -31,6 +31,10 @@ src_configure() {
 	econf \
 		--enable-opt --enable-ldopt \
 		$(use_enable X x11)
+}
+
+src_compile() {
+	emake CC=$(tc-getCC)
 }
 
 src_install() {
