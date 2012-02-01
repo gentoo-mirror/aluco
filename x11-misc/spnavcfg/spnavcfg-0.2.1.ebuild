@@ -19,7 +19,7 @@ COMMON_DEPEND="x11-libs/gtk+:2"
 DEPEND="${COMMON_DEPEND}
 	dev-util/pkgconfig"
 RDEPEND="${COMMON_DEPEND}
-	sys-libs/spacenavd[X]"
+	app-misc/spacenavd[X]"
 
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-destdir.patch

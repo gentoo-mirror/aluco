@@ -15,7 +15,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="X"
 
-RDEPEND="X? ( sys-libs/spacenavd[X?] )"
+RDEPEND="X? ( app-misc/spacenavd[X?] )"
 DEPEND="${RDEPEND}"
 
 src_prepare() {
