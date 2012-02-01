@@ -61,7 +61,7 @@ RDEPEND="virtual/jpeg
 	jack? ( media-sound/jack-audio-connection-kit )
 	sndfile? ( media-libs/libsndfile )
 	lcms? ( media-libs/lcms )
-	3dmouse? ( media-libs/libspnav )"
+	3dmouse? ( dev-libs/libspnav )"
 
 DEPEND="dev-util/scons
 	apidoc? (

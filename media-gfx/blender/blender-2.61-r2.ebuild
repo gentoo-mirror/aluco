@@ -64,7 +64,7 @@ RDEPEND="virtual/jpeg
 	fftw? ( sci-libs/fftw:3.0 )
 	jack? ( media-sound/jack-audio-connection-kit )
 	sndfile? ( media-libs/libsndfile )
-	3dmouse? ( media-libs/libspnav )"
+	3dmouse? ( dev-libs/libspnav )"
 
 DEPEND="dev-util/scons
 	apidoc? (
