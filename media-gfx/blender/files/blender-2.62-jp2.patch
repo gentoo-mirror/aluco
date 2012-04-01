@@ -1,11 +1,13 @@
---- blender-2.62/source/blender/imbuf/intern/jp2.c.orig	2012-03-22 15:36:22.717232295 +0100
-+++ blender-2.62/source/blender/imbuf/intern/jp2.c	2012-03-22 15:36:37.555232983 +0100
-@@ -38,6 +38,8 @@
+=== modified file 'source/blender/imbuf/intern/jp2.c'
+--- source/blender/imbuf/intern/jp2.c	2012-03-31 13:59:45 +0000
++++ source/blender/imbuf/intern/jp2.c	2012-03-31 13:59:55 +0000
+@@ -329,7 +329,7 @@
  
- #include "openjpeg.h"
- 
-+#include <stdbool.h>
-+
- #define JP2_FILEHEADER_SIZE 14
- 
- static char JP2_HEAD[]= {0x0, 0x0, 0x0, 0x0C, 0x6A, 0x50, 0x20, 0x20, 0x0D, 0x0A, 0x87, 0x0A};
+ static void cinema_parameters(opj_cparameters_t *parameters)
+ {
+-	parameters->tile_size_on = false;
++	parameters->tile_size_on = FALSE;
+ 	parameters->cp_tdx=1;
+ 	parameters->cp_tdy=1;
+ 	
+
