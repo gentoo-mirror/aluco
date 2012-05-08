@@ -1,0 +1,13 @@
+diff -Npur blender-2.63.orig/doc/doxygen/Doxyfile blender-2.63/doc/doxygen/Doxyfile
+--- blender-2.63.orig/doc/doxygen/Doxyfile	2012-05-07 23:00:09.494567393 +0200
++++ blender-2.63/doc/doxygen/Doxyfile	2012-05-07 23:00:39.390566856 +0200
+@@ -952,7 +952,7 @@ CHM_FILE               = blender.chm
+ # the HTML help compiler (hhc.exe). If non-empty doxygen will try to run 
+ # the HTML help compiler on the generated index.hhp.
+ 
+-HHC_LOCATION           = "C:/Program Files (x86)/HTML Help Workshop/hhc.exe"
++HHC_LOCATION           =
+ 
+ # If the GENERATE_HTMLHELP tag is set to YES, the GENERATE_CHI flag 
+ # controls if a separate .chi index file is generated (YES) or that 
+Les fichiers binaires blender-2.63.orig/doc/doxygen/.Doxyfile.swp et blender-2.63/doc/doxygen/.Doxyfile.swp sont différents.

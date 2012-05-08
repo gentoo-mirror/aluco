@@ -1,0 +1,193 @@
+diff -Npur blender-2.63.orig/build_files/scons/tools/Blender.py blender-2.63/build_files/scons/tools/Blender.py
+--- blender-2.63.orig/build_files/scons/tools/Blender.py	2012-05-07 23:11:26.396555426 +0200
++++ blender-2.63/build_files/scons/tools/Blender.py	2012-05-07 23:12:34.965554211 +0200
+@@ -270,6 +270,8 @@ def setup_syslibs(lenv):
+         syslibs += Split(lenv['BF_SDL_LIB'])
+     if not lenv['WITH_BF_STATICOPENGL']:
+         syslibs += Split(lenv['BF_OPENGL_LIB'])
++    if lenv['WITH_BF_BULLET']:
++	syslibs += Split(lenv['BF_BULLET_LIB'])
+     if lenv['OURPLATFORM'] in ('win32-vc', 'win32-mingw','linuxcross', 'win64-vc', 'win64-mingw'):
+         syslibs += Split(lenv['BF_PTHREADS_LIB'])
+     if lenv['WITH_BF_COLLADA']:
+Les fichiers binaires blender-2.63.orig/build_files/scons/tools/.Blender.py.swp et blender-2.63/build_files/scons/tools/.Blender.py.swp sont différents.
+diff -Npur blender-2.63.orig/doc/doxygen/Doxyfile blender-2.63/doc/doxygen/Doxyfile
+--- blender-2.63.orig/doc/doxygen/Doxyfile	2012-05-07 23:11:26.375555426 +0200
++++ blender-2.63/doc/doxygen/Doxyfile	2012-05-07 23:13:03.593553708 +0200
+@@ -617,8 +617,7 @@ INPUT                  = doxygen.main \
+                          doxygen.intern \
+                          doxygen.extern \
+                          ../../source \
+-                         ../../intern \
+-                         ../../extern/bullet2
++                         ../../intern
+ 
+ # This tag can be used to specify the character encoding of the source files 
+ # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
+diff -Npur blender-2.63.orig/extern/CMakeLists.txt blender-2.63/extern/CMakeLists.txt
+--- blender-2.63.orig/extern/CMakeLists.txt	2012-05-07 23:11:26.393555426 +0200
++++ blender-2.63/extern/CMakeLists.txt	2012-05-07 23:13:17.988553449 +0200
+@@ -28,10 +28,6 @@ remove_strict_flags()
+ 
+ add_subdirectory(colamd)
+ 
+-if(WITH_BULLET)
+-	add_subdirectory(bullet2)
+-endif()
+-
+ if(WITH_MOD_CLOTH_ELTOPO)
+ 	add_subdirectory(eltopo)
+ endif()
+diff -Npur blender-2.63.orig/extern/SConscript blender-2.63/extern/SConscript
+--- blender-2.63.orig/extern/SConscript	2012-05-07 23:11:26.392555426 +0200
++++ blender-2.63/extern/SConscript	2012-05-07 23:14:02.743552661 +0200
+@@ -10,9 +10,6 @@ if env['WITH_BF_GAMEENGINE']:
+ if env['WITH_BF_ELTOPO']:
+     SConscript(['eltopo/SConscript'])
+ 
+-if env['WITH_BF_BULLET']:
+-    SConscript(['bullet2/src/SConscript'])
+-
+ if env['WITH_BF_REDCODE'] and env['BF_REDCODE_LIB'] == '':
+     SConscript(['libredcode/SConscript'])
+ 
+diff -Npur blender-2.63.orig/intern/smoke/CMakeLists.txt blender-2.63/intern/smoke/CMakeLists.txt
+--- blender-2.63.orig/intern/smoke/CMakeLists.txt	2012-05-07 23:11:26.588555423 +0200
++++ blender-2.63/intern/smoke/CMakeLists.txt	2012-05-07 23:14:28.696552195 +0200
+@@ -26,10 +26,10 @@
+ set(INC
+ 	intern
+ 	../memutil
+-	../../extern/bullet2/src
+ )
+ 
+ set(INC_SYS
++	/usr/include/bullet2
+ 	${PNG_INCLUDE_DIR}
+ 	${ZLIB_INCLUDE_DIRS}
+ )
+diff -Npur blender-2.63.orig/intern/smoke/SConscript blender-2.63/intern/smoke/SConscript
+--- blender-2.63.orig/intern/smoke/SConscript	2012-05-07 23:11:26.588555423 +0200
++++ blender-2.63/intern/smoke/SConscript	2012-05-07 23:14:54.374551750 +0200
+@@ -13,7 +13,7 @@ if env['WITH_BF_OPENMP']:
+     defs += ' PARALLEL=1'
+ 
+ incs += ' ' + env['BF_PNG_INC'] + ' ' + env['BF_ZLIB_INC'] 
+-incs += ' intern ../../extern/bullet2/src ../memutil ../guardealloc '
++incs += ' intern /usr/include/bullet ../memutil ../guardealloc '
+ 
+ if env['WITH_BF_FFTW3']:
+     defs += ' WITH_FFTW3'
+diff -Npur blender-2.63.orig/source/blender/blenkernel/CMakeLists.txt blender-2.63/source/blender/blenkernel/CMakeLists.txt
+--- blender-2.63.orig/source/blender/blenkernel/CMakeLists.txt	2012-05-07 23:11:26.424555425 +0200
++++ blender-2.63/source/blender/blenkernel/CMakeLists.txt	2012-05-07 23:15:38.670550966 +0200
+@@ -241,8 +241,8 @@ if(WITH_AUDASPACE)
+ endif()
+ 
+ if(WITH_BULLET)
+-	list(APPEND INC
+-		../../../extern/bullet2/src
++    list(APPEND INC_SYS
++		/usr/include/bullet
+ 	)
+ 	add_definitions(-DUSE_BULLET)
+ endif()
+diff -Npur blender-2.63.orig/source/blender/blenkernel/SConscript blender-2.63/source/blender/blenkernel/SConscript
+--- blender-2.63.orig/source/blender/blenkernel/SConscript	2012-05-07 23:11:26.424555425 +0200
++++ blender-2.63/source/blender/blenkernel/SConscript	2012-05-07 23:15:57.449550634 +0200
+@@ -9,7 +9,7 @@ incs += ' ../blenlib ../blenfont ../make
+ incs += ' ../render/extern/include #/intern/decimation/extern ../makesrna'
+ incs += ' ../imbuf ../ikplugin ../avi #/intern/elbeem/extern ../nodes ../modifiers'
+ incs += ' #/intern/iksolver/extern ../blenloader'
+-incs += ' #/extern/bullet2/src'
++incs += ' /usr/include/bullet'
+ incs += ' #/intern/opennl/extern #/intern/bsp/extern'
+ incs += ' ../gpu #/extern/glew/include'
+ incs += ' ../bmesh'
+diff -Npur blender-2.63.orig/source/gameengine/BlenderRoutines/CMakeLists.txt blender-2.63/source/gameengine/BlenderRoutines/CMakeLists.txt
+--- blender-2.63.orig/source/gameengine/BlenderRoutines/CMakeLists.txt	2012-05-07 23:11:26.402555426 +0200
++++ blender-2.63/source/gameengine/BlenderRoutines/CMakeLists.txt	2012-05-07 23:16:28.027550096 +0200
+@@ -23,7 +23,6 @@ set(INC
+ 	../../blender/makesdna
+ 	../../blender/makesrna
+ 	../../blender/windowmanager
+-	../../../extern/bullet2/src
+ 	../../../intern/container
+ 	../../../intern/guardedalloc
+ 	../../../intern/moto/include
+@@ -32,7 +31,7 @@ set(INC
+ )
+ 
+ set(INC_SYS
+-
++	/usr/include/bullet
+ )
+ 
+ set(SRC
+diff -Npur blender-2.63.orig/source/gameengine/Converter/CMakeLists.txt blender-2.63/source/gameengine/Converter/CMakeLists.txt
+--- blender-2.63.orig/source/gameengine/Converter/CMakeLists.txt	2012-05-07 23:11:26.407555426 +0200
++++ blender-2.63/source/gameengine/Converter/CMakeLists.txt	2012-05-07 23:17:17.198549223 +0200
+@@ -49,7 +49,6 @@ set(INC
+ 	../../blender/makesdna
+ 	../../blender/makesrna
+ 	../../blender/windowmanager
+-	../../../extern/bullet2/src
+ 	../../../intern/container
+ 	../../../intern/guardedalloc
+ 	../../../intern/moto/include
+@@ -59,6 +58,7 @@ set(INC
+ 
+ set(INC_SYS
+ 	/usr/include/eigen3
++	/usr/include/bullet
+ )
+ 
+ set(SRC
+diff -Npur blender-2.63.orig/source/gameengine/Ketsji/CMakeLists.txt blender-2.63/source/gameengine/Ketsji/CMakeLists.txt
+--- blender-2.63.orig/source/gameengine/Ketsji/CMakeLists.txt	2012-05-07 23:11:26.414555426 +0200
++++ blender-2.63/source/gameengine/Ketsji/CMakeLists.txt	2012-05-07 23:18:53.098547529 +0200
+@@ -241,9 +241,11 @@ endif()
+ 
+ if(WITH_BULLET)
+ 	list(APPEND INC
+-		../../../extern/bullet2/src
+ 		../Physics/Bullet
+ 	)
++	list(APPEND INC_SYS
++		/usr/include/bullet
++	)
+ 	add_definitions(-DUSE_BULLET)
+ endif()
+ 
+diff -Npur blender-2.63.orig/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp blender-2.63/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp
+--- blender-2.63.orig/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp	2012-05-07 23:11:26.402555426 +0200
++++ blender-2.63/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp	2012-05-07 23:19:45.545546606 +0200
+@@ -2804,7 +2804,8 @@ float		CcdPhysicsEnvironment::getApplied
+ 
+ void	CcdPhysicsEnvironment::exportFile(const char* filename)
+ {
+-	btDefaultSerializer*	serializer = new btDefaultSerializer();
++	// Workaround bullet-2.77 api change.
++	btDefaultSerializer*	serializer = new btDefaultSerializer(0);
+ 	
+ 		
+ 	for (int i=0;i<m_dynamicsWorld->getNumCollisionObjects();i++)
+diff -Npur blender-2.63.orig/source/gameengine/Physics/Bullet/CMakeLists.txt blender-2.63/source/gameengine/Physics/Bullet/CMakeLists.txt
+--- blender-2.63.orig/source/gameengine/Physics/Bullet/CMakeLists.txt	2012-05-07 23:11:26.402555426 +0200
++++ blender-2.63/source/gameengine/Physics/Bullet/CMakeLists.txt	2012-05-07 23:20:13.314546112 +0200
+@@ -37,7 +37,6 @@ set(INC
+ 	../../../blender/blenkernel
+ 	../../../blender/blenlib
+ 	../../../blender/makesdna
+-	../../../../extern/bullet2/src
+ 	../../../../intern/container
+ 	../../../../intern/guardedalloc
+ 	../../../../intern/moto/include
+@@ -45,6 +44,7 @@ set(INC
+ )
+ 
+ set(INC_SYS
++	/usr/include/bullet
+ 	${GLEW_INCLUDE_PATH}
+ 	${PYTHON_INCLUDE_DIRS}
+ )
