@@ -62,7 +62,7 @@ diff -Npur blender-2.63.orig/intern/smoke/CMakeLists.txt blender-2.63/intern/smo
  )
  
  set(INC_SYS
-+	/usr/include/bullet2
++	/usr/include/bullet
  	${PNG_INCLUDE_DIR}
  	${ZLIB_INCLUDE_DIRS}
  )

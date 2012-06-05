@@ -1,0 +1,191 @@
+diff -Npur blender-2.63a.orig/build_files/scons/tools/Blender.py blender-2.63a/build_files/scons/tools/Blender.py
+--- blender-2.63a.orig/build_files/scons/tools/Blender.py	2012-06-05 10:10:16.142793179 +0200
++++ blender-2.63a/build_files/scons/tools/Blender.py	2012-06-05 10:11:26.418791934 +0200
+@@ -270,6 +270,8 @@ def setup_syslibs(lenv):
+         syslibs += Split(lenv['BF_SDL_LIB'])
+     if not lenv['WITH_BF_STATICOPENGL']:
+         syslibs += Split(lenv['BF_OPENGL_LIB'])
++    if lenv['WITH_BF_BULLET']:
++	syslibs += Split(lenv['BF_BULLET_LIB'])
+     if lenv['OURPLATFORM'] in ('win32-vc', 'win32-mingw','linuxcross', 'win64-vc', 'win64-mingw'):
+         syslibs += Split(lenv['BF_PTHREADS_LIB'])
+     if lenv['WITH_BF_COLLADA']:
+diff -Npur blender-2.63a.orig/doc/doxygen/Doxyfile blender-2.63a/doc/doxygen/Doxyfile
+--- blender-2.63a.orig/doc/doxygen/Doxyfile	2012-06-05 10:10:16.120793179 +0200
++++ blender-2.63a/doc/doxygen/Doxyfile	2012-06-05 10:11:46.646791579 +0200
+@@ -617,8 +617,7 @@ INPUT                  = doxygen.main \
+                          doxygen.intern \
+                          doxygen.extern \
+                          ../../source \
+-                         ../../intern \
+-                         ../../extern/bullet2
++                         ../../intern
+ 
+ # This tag can be used to specify the character encoding of the source files 
+ # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
+diff -Npur blender-2.63a.orig/extern/CMakeLists.txt blender-2.63a/extern/CMakeLists.txt
+--- blender-2.63a.orig/extern/CMakeLists.txt	2012-06-05 10:10:16.139793179 +0200
++++ blender-2.63a/extern/CMakeLists.txt	2012-06-05 10:12:10.840791151 +0200
+@@ -28,10 +28,6 @@ remove_strict_flags()
+ 
+ add_subdirectory(colamd)
+ 
+-if(WITH_BULLET)
+-	add_subdirectory(bullet2)
+-endif()
+-
+ if(WITH_MOD_CLOTH_ELTOPO)
+ 	add_subdirectory(eltopo)
+ endif()
+diff -Npur blender-2.63a.orig/extern/SConscript blender-2.63a/extern/SConscript
+--- blender-2.63a.orig/extern/SConscript	2012-06-05 10:10:16.137793179 +0200
++++ blender-2.63a/extern/SConscript	2012-06-05 10:12:20.900790970 +0200
+@@ -10,9 +10,6 @@ if env['WITH_BF_GAMEENGINE']:
+ if env['WITH_BF_ELTOPO']:
+     SConscript(['eltopo/SConscript'])
+ 
+-if env['WITH_BF_BULLET']:
+-    SConscript(['bullet2/src/SConscript'])
+-
+ if env['WITH_BF_REDCODE'] and env['BF_REDCODE_LIB'] == '':
+     SConscript(['libredcode/SConscript'])
+ 
+diff -Npur blender-2.63a.orig/intern/smoke/CMakeLists.txt blender-2.63a/intern/smoke/CMakeLists.txt
+--- blender-2.63a.orig/intern/smoke/CMakeLists.txt	2012-06-05 10:10:16.425793174 +0200
++++ blender-2.63a/intern/smoke/CMakeLists.txt	2012-06-05 10:14:32.995788638 +0200
+@@ -26,10 +26,10 @@
+ set(INC
+ 	intern
+ 	../memutil
+-	../../extern/bullet2/src
+ )
+ 
+ set(INC_SYS
++	/usr/include/bullet
+ 	${PNG_INCLUDE_DIR}
+ 	${ZLIB_INCLUDE_DIRS}
+ )
+diff -Npur blender-2.63a.orig/intern/smoke/SConscript blender-2.63a/intern/smoke/SConscript
+--- blender-2.63a.orig/intern/smoke/SConscript	2012-06-05 10:10:16.425793174 +0200
++++ blender-2.63a/intern/smoke/SConscript	2012-06-05 10:15:08.614788006 +0200
+@@ -13,7 +13,7 @@ if env['WITH_BF_OPENMP']:
+     defs += ' PARALLEL=1'
+ 
+ incs += ' ' + env['BF_PNG_INC'] + ' ' + env['BF_ZLIB_INC'] 
+-incs += ' intern ../../extern/bullet2/src ../memutil ../guardealloc '
++incs += ' intern /usr/include/bullet ../memutil ../guardealloc '
+ 
+ if env['WITH_BF_FFTW3']:
+     defs += ' WITH_FFTW3'
+diff -Npur blender-2.63a.orig/source/blender/blenkernel/CMakeLists.txt blender-2.63a/source/blender/blenkernel/CMakeLists.txt
+--- blender-2.63a.orig/source/blender/blenkernel/CMakeLists.txt	2012-06-05 10:10:16.169793179 +0200
++++ blender-2.63a/source/blender/blenkernel/CMakeLists.txt	2012-06-05 10:16:02.912787046 +0200
+@@ -241,8 +241,8 @@ if(WITH_AUDASPACE)
+ endif()
+ 
+ if(WITH_BULLET)
+-	list(APPEND INC
+-		../../../extern/bullet2/src
++	list(APPEND INC_SYS
++		/usr/include/bullet
+ 	)
+ 	add_definitions(-DUSE_BULLET)
+ endif()
+diff -Npur blender-2.63a.orig/source/blender/blenkernel/SConscript blender-2.63a/source/blender/blenkernel/SConscript
+--- blender-2.63a.orig/source/blender/blenkernel/SConscript	2012-06-05 10:10:16.169793179 +0200
++++ blender-2.63a/source/blender/blenkernel/SConscript	2012-06-05 10:16:40.599786382 +0200
+@@ -9,7 +9,7 @@ incs += ' ../blenlib ../blenfont ../make
+ incs += ' ../render/extern/include #/intern/decimation/extern ../makesrna'
+ incs += ' ../imbuf ../ikplugin ../avi #/intern/elbeem/extern ../nodes ../modifiers'
+ incs += ' #/intern/iksolver/extern ../blenloader'
+-incs += ' #/extern/bullet2/src'
++incs += ' /usr/include/bullet'
+ incs += ' #/intern/opennl/extern #/intern/bsp/extern'
+ incs += ' ../gpu #/extern/glew/include'
+ incs += ' ../bmesh'
+diff -Npur blender-2.63a.orig/source/gameengine/BlenderRoutines/CMakeLists.txt blender-2.63a/source/gameengine/BlenderRoutines/CMakeLists.txt
+--- blender-2.63a.orig/source/gameengine/BlenderRoutines/CMakeLists.txt	2012-06-05 10:10:16.148793179 +0200
++++ blender-2.63a/source/gameengine/BlenderRoutines/CMakeLists.txt	2012-06-05 10:17:27.687785549 +0200
+@@ -23,7 +23,6 @@ set(INC
+ 	../../blender/makesdna
+ 	../../blender/makesrna
+ 	../../blender/windowmanager
+-	../../../extern/bullet2/src
+ 	../../../intern/container
+ 	../../../intern/guardedalloc
+ 	../../../intern/moto/include
+@@ -33,6 +32,7 @@ set(INC
+ 
+ set(INC_SYS
+ 	${PTHREADS_INCLUDE_DIRS}
++	/usr/include/bullet
+ )
+ 
+ set(SRC
+diff -Npur blender-2.63a.orig/source/gameengine/Converter/CMakeLists.txt blender-2.63a/source/gameengine/Converter/CMakeLists.txt
+--- blender-2.63a.orig/source/gameengine/Converter/CMakeLists.txt	2012-06-05 10:10:16.153793179 +0200
++++ blender-2.63a/source/gameengine/Converter/CMakeLists.txt	2012-06-05 10:18:05.141784886 +0200
+@@ -49,7 +49,6 @@ set(INC
+ 	../../blender/makesdna
+ 	../../blender/makesrna
+ 	../../blender/windowmanager
+-	../../../extern/bullet2/src
+ 	../../../intern/container
+ 	../../../intern/guardedalloc
+ 	../../../intern/moto/include
+@@ -60,6 +59,7 @@ set(INC
+ set(INC_SYS
+ 	${PTHREADS_INCLUDE_DIRS}
+ 	/usr/include/eigen3
++	/usr/include/bullet
+ )
+ 
+ set(SRC
+diff -Npur blender-2.63a.orig/source/gameengine/Ketsji/CMakeLists.txt blender-2.63a/source/gameengine/Ketsji/CMakeLists.txt
+--- blender-2.63a.orig/source/gameengine/Ketsji/CMakeLists.txt	2012-06-05 10:10:16.159793179 +0200
++++ blender-2.63a/source/gameengine/Ketsji/CMakeLists.txt	2012-06-05 10:19:28.099783421 +0200
+@@ -242,9 +242,11 @@ endif()
+ 
+ if(WITH_BULLET)
+ 	list(APPEND INC
+-		../../../extern/bullet2/src
+ 		../Physics/Bullet
+ 	)
++	list(APPEND INC_SYS
++		/usr/include/bullet
++	)
+ 	add_definitions(-DUSE_BULLET)
+ endif()
+ 
+diff -Npur blender-2.63a.orig/source/gameengine/Physics/Bullet/CMakeLists.txt blender-2.63a/source/gameengine/Physics/Bullet/CMakeLists.txt
+--- blender-2.63a.orig/source/gameengine/Physics/Bullet/CMakeLists.txt	2012-06-05 10:10:16.147793179 +0200
++++ blender-2.63a/source/gameengine/Physics/Bullet/CMakeLists.txt	2012-06-05 10:21:19.834781445 +0200
+@@ -37,7 +37,6 @@ set(INC
+ 	../../../blender/blenkernel
+ 	../../../blender/blenlib
+ 	../../../blender/makesdna
+-	../../../../extern/bullet2/src
+ 	../../../../intern/container
+ 	../../../../intern/guardedalloc
+ 	../../../../intern/moto/include
+@@ -45,6 +44,7 @@ set(INC
+ )
+ 
+ set(INC_SYS
++	/usr/include/bullet
+ 	${GLEW_INCLUDE_PATH}
+ 	${PYTHON_INCLUDE_DIRS}
+ )
+diff -Npur blender-2.63a.orig/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp blender-2.63a/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp
+--- blender-2.63a.orig/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp	2012-06-05 10:10:16.148793179 +0200
++++ blender-2.63a/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp	2012-06-05 10:20:49.889781975 +0200
+@@ -2804,7 +2804,8 @@ float		CcdPhysicsEnvironment::getApplied
+ 
+ void	CcdPhysicsEnvironment::exportFile(const char* filename)
+ {
+-	btDefaultSerializer*	serializer = new btDefaultSerializer();
++	// Workaround bullet-2.77 api change.
++	btDefaultSerializer*	serializer = new btDefaultSerializer(0);
+ 	
+ 		
+ 	for (int i=0;i<m_dynamicsWorld->getNumCollisionObjects();i++)
