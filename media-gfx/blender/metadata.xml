@@ -63,5 +63,11 @@
 			This flag add support for RED CODE camera digital format (5K HD
 			images *.r3d) - EXPERIMENTAL.
 		</flag>
+		<flag name='oceansim'>
+			Build with ocean simulation.
+		</flag>
+		<flag name='pax_kernel'>Enable building under a PaX enabled kernel
+			(<pkg>sys-apps/paxctl</pkg>)
+		</flag>
 	</use>
 </pkgmetadata>
