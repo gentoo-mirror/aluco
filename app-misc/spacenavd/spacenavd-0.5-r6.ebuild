@@ -1,10 +1,10 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-misc/spacenavd/spacenavd-0.5-r4.ebuild,v 1.6 2013/02/12 16:51:06 ago Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-misc/spacenavd/spacenavd-0.5-r5.ebuild,v 1.1 2014/03/30 09:53:03 pacho Exp $
 
 EAPI="4"
 
-inherit eutils linux-info toolchain-funcs udev systemd
+inherit eutils linux-info systemd toolchain-funcs udev
 
 MY_PN='spacenav'
 DESCRIPTION="The spacenavd daemon provides free alternative to the 3dxserv daemon."
@@ -12,7 +12,7 @@ HOMEPAGE="http://spacenav.sourceforge.net/"
 SRC_URI="mirror://sourceforge/project/${MY_PN}/${MY_PN}%20daemon/${PN}%20${PV}/${P}.tar.gz"
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="amd64 ppc64 x86"
+KEYWORDS="~amd64 ~ppc64 ~x86"
 IUSE="X"
 
 RDEPEND="X? ( x11-apps/xdpyinfo )"
@@ -45,13 +45,14 @@ src_install() {
 	insinto /etc
 	newins "${S}/doc/example-spnavrc" spnavrc.sample
 
-	if ! systemd_is_booted; then
-		udev_newrules "${FILESDIR}"/99-space-navigator.rules 99-space-navigator.rules
-		newinitd "${FILESDIR}/spnavd" spacenavd
-	else
-		udev_newrules "${FILESDIR}"/99-space-navigator.rules.systemd 99-space-navigator.rules
-		systemd_newunit "${FILESDIR}"/spnavd.service "${PN}.service"
-	fi
+	# Init script
+	newinitd "${FILESDIR}/spnavd" spacenavd
+	systemd_dounit "${FILESDIR}/spacenavd.service"
+
+	# Install udev rule but leave activiation to the user
+	# since Xorg may be configured to grab the device already
+	insinto "$(udev_get_udevdir)/rules.d"
+	newins "${FILESDIR}"/99-space-navigator.rules-r1 99-space-navigator.rules.ignored
 
 	# Daemon
 	dobin "${S}/spacenavd"
@@ -59,12 +60,11 @@ src_install() {
 }
 
 pkg_postinst() {
-	if ! systemd_is_booted; then
-		elog "To start the Spacenav daemon system-wide by default"
-		elog "you should add it to the default runlevel :"
-		elog "\`rc-update add spacenavd default\`"
-		elog
-	fi
+	elog "To start the Spacenav daemon system-wide by default"
+	elog "you should add it to the default runlevel :"
+	elog "\`rc-update add spacenavd default\` (for openRC)"
+	elog "\`systemctl enable spacenavd\` (for systemd)"
+	elog
 	if use X; then
 		elog "To start generating Spacenav X events by default"
 		elog "you should add this command in your user startup"
@@ -72,8 +72,11 @@ pkg_postinst() {
 		elog "\`spnavd_ctl x11 start\`"
 		elog
 	fi
-	if ! systemd_is_booted; then
-		ewarn "You must restart spnavd \`/etc/init.d/spacenavd restart\` to run"
-		ewarn "the new version of the daemon."
-	fi
+	elog
+	elog "If you want to auto-start the daemon when you plug in"
+	elog "a SpaceNavigator device, activate the related udev rule :"
+	elog "\`sudo ln -s $(udev_get_udevdir)/rules.d/99-space-navigator.rules.ignored /etc/udev/rules.d\`"
+	ewarn "You must restart spnavd \`/etc/init.d/spacenavd restart\` to run"
+	ewarn "the new version of the daemon or \`systemctl restart spacenavd\`"
+	ewarn "if using systemd."
 }
