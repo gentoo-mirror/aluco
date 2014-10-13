@@ -4,7 +4,7 @@
 
 EAPI="5"
 
-inherit games
+inherit autotools games
 
 DESCRIPTION="Simulation game involving virtual machine code"
 HOMEPAGE="http://corewars.sourceforge.net/"
@@ -14,7 +14,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz
 KEYWORDS="~amd64 ~x86"
 LICENSE="GPL-2"
 SLOT="0"
-IUSE=""
+IUSE="debug"
 
 RDEPEND=">=x11-libs/gtk+-2:2"
 DEPEND="${RDEPEND}"
@@ -22,6 +22,12 @@ DEPEND="${RDEPEND}"
 src_prepare() {
 	epatch "${DISTDIR}"/${PN}-gtk2.patch.gz
 	epatch "${FILESDIR}"/${PV}-corewars-lm.patch
+
+	eautoreconf
+}
+
+src_configure() {
+	econf $(use_enable debug gcc-debug)
 }
 
 src_install() {
