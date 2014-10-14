@@ -22,16 +22,20 @@ DEPEND="${RDEPEND}"
 src_prepare() {
 	epatch "${DISTDIR}"/${PN}-gtk2.patch.gz
 	epatch "${FILESDIR}"/${PV}-corewars-lm.patch
+	epatch "${FILESDIR}"/${PV}-fix-get_current_dir_name-prototype.patch
 
 	eautoreconf
 }
 
+
 src_configure() {
-	econf $(use_enable debug gcc-debug)
+	egamesconf $(use_enable debug gcc-debug)
 }
 
 src_install() {
 	make DESTDIR="${D}" install || die "make install failed"
+	insinto "${GAMES_DATADIR}"/${PN}
+	doins "${FILESDIR}/reroute.cw"
 	dodoc ChangeLog README doc/{TODO,DIFFERENCES,INTERESTING-COMBINATIONS}
 	prepgamesdirs
 }
