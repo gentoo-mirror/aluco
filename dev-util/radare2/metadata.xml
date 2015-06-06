@@ -21,6 +21,13 @@
 		</flag>
 	</use>
 	<use>
+		<flag name='debug'>
+			Enable extra debug codepaths, like asserts and extra output. If you
+			want to get meaningful backtraces see
+			http://www.gentoo.org/proj/en/qa/backtraces.xml
+		</flag>
+	</use>
+	<use>
 		<flag name='debugger'>
 			Build native debugger features
 		</flag>
