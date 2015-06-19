@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<herd>games</herd>
+	<maintainer>
+		<email>anthoine.bourgeois@gmail.com</email>
+		<name>Anthoine Bourgeois</name>
+		<description>aluco's overlay maintainer</description>
+	</maintainer>
+	<longdescription>
+		GeneticInvasion is a tower defence game under a free license.
+		What makes it different from all the tower defences you've played so far
+		is that is uses genetic algorithm to make the enemies evolve.
+		No more scripted increasing difficulty system.
+	</longdescription>
+</pkgmetadata>
