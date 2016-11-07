@@ -2,9 +2,6 @@
 # Please add your descriptions to your package's metadata.xml ONLY.
 # * generated automatically using pmaint *
 
-dev-util/radare2:cparse - Build with cparse support
-dev-util/radare2:debug - Enable extra debug codepaths, like asserts and extra output. If you want to get meaningful backtraces see http://www.gentoo.org/proj/en/qa/backtraces.xml
-dev-util/radare2:debugger - Build native debugger features
 dev-util/radare2:ewf - Build the EWF (SMART and EnCase) image format dependency
 media-gfx/blender:3dmouse - Support 3D mouse (media-libs/libspnav).
 media-gfx/blender:apidoc - Build GameEngine/Python/C API documentation directly from the source code using tools epydoc (dev-python/epydoc) and doxygen (app-doc/doxygen).
