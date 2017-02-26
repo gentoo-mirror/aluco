@@ -3,17 +3,3 @@
 # * generated automatically using pmaint *
 
 dev-util/radare2:ewf - Build the EWF (SMART and EnCase) image format dependency
-media-gfx/blender:3dmouse - Support 3D mouse (media-libs/libspnav).
-media-gfx/blender:apidoc - Build GameEngine/Python/C API documentation directly from the source code using tools epydoc (dev-python/epydoc) and doxygen (app-doc/doxygen).
-media-gfx/blender:collada - Add support for Collada interchange format.
-media-gfx/blender:contrib - Install contrib scripts.
-media-gfx/blender:cycles - Enables Cycles render engine.
-media-gfx/blender:dds - Adds DDS textures support to Blender.
-media-gfx/blender:elbeem - Adds surface fluid simulation to Blender using El'Beem library.
-media-gfx/blender:game-engine - Adds Game Engine support to Blender (>=2.5* ebuilds).
-media-gfx/blender:oceansim - Build with ocean simulation.
-media-gfx/blender:openexr - Support for the OpenEXR graphics file format.
-media-gfx/blender:pax_kernel - Enable building under a PaX enabled kernel (sys-apps/paxctl)
-media-gfx/blender:player - Build the Blender Player.
-media-gfx/blender:redcode - This flag add support for RED CODE camera digital format (5K HD images *.r3d) - EXPERIMENTAL.
-media-gfx/blender:tweak-mode - This flag allows you to model without confirming each translation, in particular it lets you grab with left mouse button (LMB) and not having to confirm by another click. Blender 'Tweak Mode' is similar to the 'Tweak Mode' of the Wings modeller (media-gfx/wings).
