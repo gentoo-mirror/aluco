@@ -8,5 +8,4 @@ KEYWORDS=~alpha ~amd64 ~arm ~hppa ~ppc ~sparc ~x86 ~amd64-linux ~x86-linux
 LICENSE=GPL-2
 SLOT=0
 SRC_URI=mirror://debian/pool/main/f/fakeroot/fakeroot_1.16.orig.tar.bz2
-_eclass_exported_funcs=-
 _md5_=1b3df97a487c723271ef1adafca4614e
